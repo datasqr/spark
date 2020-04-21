@@ -1,4 +1,4 @@
-
+[![Build Status](https://travis-ci.com/konradmalik/spark.svg?branch=master)](https://travis-ci.com/konradmalik/spark)
 Dockerized spark 2.4.5, scala 2.12.
 
 Hadoop 2.10
