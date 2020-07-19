@@ -1,12 +1,12 @@
 # ==================================================================
 # module list
 # ------------------------------------------------------------------
-# python                    3.7    (apt)
+# python                    3.8    (apt)
 # java+scala                8;2.12 (apt)
-# Spark+utility             2.4.5  (apt+pip)
+# Spark+utility             2.4.6  (apt+pip)
 # ==================================================================
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 ENV LANG C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APT_INSTALL="apt-get update && apt-get install -y --no-install-recommends --fix-missing"
@@ -37,7 +37,7 @@ RUN eval $APT_INSTALL \
 # ==================================================================
 # python
 # ------------------------------------------------------------------
-ENV PYTHON_COMPAT_VERSION=3.7
+ENV PYTHON_COMPAT_VERSION=3.8
 RUN eval $APT_INSTALL \
         software-properties-common && \
 	add-apt-repository ppa:deadsnakes/ppa && \
@@ -58,9 +58,9 @@ RUN eval $APT_INSTALL \
 # Java and scala
 # ------------------------------------------------------------------
 ENV JAVA_VERSION=8
-ENV SCALA_VERSION=2.12.11
+ENV SCALA_VERSION=2.12.12
 ENV SCALA_COMPAT_VERSION=2.12
-ENV SBT_VERSION=1.3.8
+ENV SBT_VERSION=1.3.13
 RUN eval $APT_INSTALL \
         openjdk-$JAVA_VERSION-jdk && \
     curl -LO www.scala-lang.org/files/archive/scala-$SCALA_VERSION.deb && \
@@ -82,7 +82,7 @@ ENV PATH $PATH:$HADOOP_HOME/bin
 RUN curl -sL $HADOOP_ARCHIVE | tar -xz -C /usr/local/
 
 # SPARK
-ENV SPARK_VERSION 2.4.5
+ENV SPARK_VERSION 2.4.6
 ENV SPARK_ARCHIVE=https://downloads.apache.org/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-without-hadoop-scala-$SCALA_COMPAT_VERSION.tgz
 ENV SPARK_HOME /usr/local/spark-${SPARK_VERSION}-bin-without-hadoop-scala-${SCALA_COMPAT_VERSION}
 ENV SPARK_LOG=/tmp
@@ -103,7 +103,8 @@ ENV AZURE_HADOOP_ARCHIVE=https://repo1.maven.org/maven2/org/apache/hadoop/hadoop
 ENV AZURE_VERSION=7.0.0
 ENV AZURE_ARCHIVE=https://repo1.maven.org/maven2/com/microsoft/azure/azure-storage/$AZURE_VERSION/azure-storage-$AZURE_VERSION.jar
 # also add cassandra connector and dependencies
-ENV SPARK_CASSANDRA_ARCHIVE=https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_$SCALA_COMPAT_VERSION/2.4.3/spark-cassandra-connector_$SCALA_COMPAT_VERSION-2.4.3.jar
+ENV SPARK_CASSANDRA_VERSION=2.4.3
+ENV SPARK_CASSANDRA_ARCHIVE=https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_$SCALA_COMPAT_VERSION/$SPARK_CASSANDRA_VERSION/spark-cassandra-connector_$SCALA_COMPAT_VERSION-$SPARK_CASSANDRA_VERSION.jar
 ENV TWITTER_ARCHIVE=https://repo1.maven.org/maven2/com/twitter/jsr166e/1.1.0/jsr166e-1.1.0.jar
 # add spark excel support
 ENV SPARK_EXCEL_ARCHIVE=https://repo1.maven.org/maven2/com/crealytics/spark-excel_$SCALA_COMPAT_VERSION/0.13.1/spark-excel_$SCALA_COMPAT_VERSION-0.13.1.jar
@@ -141,7 +142,7 @@ RUN chmod +x add-user.sh && ./add-user.sh $DEFAULT_USER
 RUN chown -R $DEFAULT_USER:$DEFAULT_USER $SPARK_HOME
 
 # Add Tini and entrypoint
-ENV TINI_VERSION v0.18.0
+ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /tini && chmod +x /docker-entrypoint.sh
