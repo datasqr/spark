@@ -55,20 +55,26 @@ RUN eval $APT_INSTALL \
     ln -s /usr/bin/python${PYTHON_COMPAT_VERSION} /usr/local/bin/python
 
 # ==================================================================
-# Java and scala
+# Java (GraalVM) and scala
 # ------------------------------------------------------------------
-ENV JAVA_VERSION=8
+ENV GRAALVM_VERSION=20.1.0
+ENV JAVA_VERISON=8
 ENV SCALA_VERSION=2.12.12
 ENV SCALA_COMPAT_VERSION=2.12
 ENV SBT_VERSION=1.3.13
-RUN eval $APT_INSTALL \
-        openjdk-$JAVA_VERSION-jdk && \
+RUN curl -LO https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-$GRAALVM_VERSION/graalvm-ce-java$JAVA_VERISON-linux-amd64-$GRAALVM_VERSION.tar.gz && \
+    mkdir -p /usr/lib/jvm && \
+    tar -xvzf graalvm-ce-java$JAVA_VERISON-linux-amd64-$GRAALVM_VERSION.tar.gz --directory /usr/lib/jvm/ && \
+    update-alternatives --install /usr/bin/java java /usr/lib/jvm/graalvm-ce-java$JAVA_VERISON-$GRAALVM_VERSION/bin/java 1 && \
+    update-alternatives --set java /usr/lib/jvm/graalvm-ce-java$JAVA_VERISON-$GRAALVM_VERSION/bin/java && \
+    rm -rf *.tar.gz && \
     curl -LO www.scala-lang.org/files/archive/scala-$SCALA_VERSION.deb && \
+    eval $APT_INSTALL openjdk-$JAVA_VERISON-jre-headless && \
 	dpkg -i scala-$SCALA_VERSION.deb && \
     curl -LO https://bintray.com/artifact/download/sbt/debian/sbt-$SBT_VERSION.deb && \
 	dpkg -i sbt-$SBT_VERSION.deb && \
     rm -rf *.deb
-ENV JAVA_HOME /usr/lib/jvm/java-$JAVA_VERSION-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/graalvm-ce-java$JAVA_VERISON-$GRAALVM_VERSION
 
 # ==================================================================
 # Spark (with pyspark and koalas)
