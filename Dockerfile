@@ -80,7 +80,7 @@ ENV JAVA_HOME /usr/lib/jvm/graalvm-ce-java$JAVA_VERISON-$GRAALVM_VERSION
 # Spark (with pyspark and koalas)
 # ------------------------------------------------------------------
 # HADOOP
-ENV HADOOP_VERSION 2.10.0
+ENV HADOOP_VERSION 2.10.1
 ENV HADOOP_ARCHIVE=https://www-eu.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 ENV HADOOP_HOME /usr/local/hadoop-$HADOOP_VERSION
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
@@ -88,7 +88,7 @@ ENV PATH $PATH:$HADOOP_HOME/bin
 RUN curl -sL $HADOOP_ARCHIVE | tar -xz -C /usr/local/
 
 # SPARK
-ENV SPARK_VERSION 2.4.6
+ENV SPARK_VERSION 2.4.8
 ENV SPARK_ARCHIVE=https://downloads.apache.org/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-without-hadoop-scala-$SCALA_COMPAT_VERSION.tgz
 ENV SPARK_HOME /usr/local/spark-${SPARK_VERSION}-bin-without-hadoop-scala-${SCALA_COMPAT_VERSION}
 ENV SPARK_LOG=/tmp
